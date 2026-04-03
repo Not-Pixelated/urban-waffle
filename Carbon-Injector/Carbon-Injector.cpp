@@ -117,14 +117,16 @@ void __stdcall ShellcodeV13_Logic(MANUAL_MAPPING_DATA* pData)
 }
 #pragma optimize("", on)
 
-// Skeleton Wrapper for VTable Redirection
+// Skeleton Wrapper for VTable Redirection (Enhanced Stability)
 const BYTE ShellcodeV13_Stub[] = {
-    0x53, 0x56, 0x57, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41, 0x57, 0x48, 0x83, 0xEC, 0x40, // push registers
-    0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, // mov rcx, 0x100000000 (Data)
-    0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax, LogicFunc (Placeholder)
+    0x55, 0x53, 0x56, 0x57, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41, 0x57, 0x51, 0x52, 0x41, 0x50, 0x41, 0x51, // push rbp, rbx, rsi, rdi, r12, r13, r14, r15, rcx, rdx, r8, r9
+    0x48, 0x83, 0xEC, 0x40, // sub rsp, 40 (Shadow Space)
+    0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx, DataAddr (Placeholder: offset 0x1C)
+    0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax, LogicAddr (Placeholder: offset 0x26)
     0xFF, 0xD0, // call rax
-    0x48, 0x83, 0xC4, 0x40, 0x41, 0x5F, 0x41, 0x5E, 0x41, 0x5D, 0x41, 0x5C, 0x5F, 0x5E, 0x5B, // pop registers
-    0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax, OriginalHeartbeat (Placeholder)
+    0x48, 0x83, 0xC4, 0x40, // add rsp, 40
+    0x41, 0x59, 0x41, 0x58, 0x5A, 0x59, 0x41, 0x5F, 0x41, 0x5E, 0x41, 0x5D, 0x41, 0x5C, 0x5F, 0x5E, 0x5B, 0x5D, // pop r9, r8, rdx, rcx, r15, r14, r13, r12, rdi, rsi, rbx, rbp
+    0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax, OriginalHeartbeat (Placeholder: offset 0x4C)
     0xFF, 0xE0  // jmp rax
 };
 
@@ -238,9 +240,9 @@ bool GoliathV47(HANDLE hProc, DWORD PID, const char* szDllFile)
     delete[] pSrcData;
 
     MANUAL_MAPPING_DATA data{ 0 };
-    data.pLoadLibraryA = (f_LoadLibraryA)LoadLibraryA;
-    data.pGetProcAddress = (f_GetProcAddress)GetProcAddress;
     HMODULE hK32 = GetModuleHandleA("kernel32.dll");
+    data.pLoadLibraryA = (f_LoadLibraryA)GetProcAddress(hK32, "LoadLibraryA");
+    data.pGetProcAddress = (f_GetProcAddress)GetProcAddress(hK32, "GetProcAddress");
     data.pRtlAddFunctionTable = (f_RtlAddFunctionTable)GetProcAddress(hK32, "RtlAddFunctionTable");
     data.pBeep = (f_Beep)GetProcAddress(hK32, "Beep");
     data.pbase = (BYTE*)targetModBase;
@@ -254,13 +256,16 @@ bool GoliathV47(HANDLE hProc, DWORD PID, const char* szDllFile)
 
     uintptr_t logicAddr = sharedMem + 0x1000;
     uintptr_t stubAddr = sharedMem + 0x2000;
-    WriteProcessMemory(hProc, (LPVOID)logicAddr, ShellcodeV13_Logic, 0x1000, nullptr);
+
+    // Follow trampoline for local logic function address to avoid thunks
+    uintptr_t localLogicAddr = Scanner::FollowTrampolines(GetCurrentProcess(), (uintptr_t)ShellcodeV13_Logic);
+    WriteProcessMemory(hProc, (LPVOID)logicAddr, (LPCVOID)localLogicAddr, 0x1000, nullptr);
 
     BYTE stub[sizeof(ShellcodeV13_Stub)];
     memcpy(stub, ShellcodeV13_Stub, sizeof(stub));
-    *reinterpret_cast<uintptr_t*>(stub + 0x11) = sharedMem; 
-    *reinterpret_cast<uintptr_t*>(stub + 0x1B) = logicAddr; 
-    *reinterpret_cast<uintptr_t*>(stub + 0x36) = data.originalHeartbeat;
+    *reinterpret_cast<uintptr_t*>(stub + 0x18) = sharedMem;
+    *reinterpret_cast<uintptr_t*>(stub + 0x22) = logicAddr;
+    *reinterpret_cast<uintptr_t*>(stub + 0x44) = data.originalHeartbeat;
 
     bool fals = false;
     WriteProcessMemory(hProc, (LPVOID)data.pInjected, &fals, sizeof(bool), nullptr);
