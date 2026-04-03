@@ -77,6 +77,9 @@ void CarbonMain(void* pData)
             }
         }
 
+        if (Carbon::Internal::ExploitThread)
+            Carbon::Execution::HookRenderStepped(Carbon::Internal::ExploitThread);
+
         Carbon::Async::RunYield();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }

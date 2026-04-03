@@ -91,7 +91,7 @@ namespace Carbon
                 std::lock_guard<std::mutex> Lock(Internal::QueueMutex);
                 Internal::YieldQueue.emplace([=]() -> void
                 {
-                    auto ScriptContextResumeFunc = (int(__fastcall*)(uintptr_t, void*, lua_State**, int, int, int))Offsets::ScriptContextResume;
+                    auto ScriptContextResumeFunc = (int(__fastcall*)(uintptr_t, void*, lua_State**, int, int, int))::Offsets::ScriptContextResume;
                     
                     // Match yub logic: ScriptContext is from the extra space
                     uintptr_t ScriptContext = (uintptr_t)L->userdata->SharedExtraSpace->ScriptContext;
@@ -100,7 +100,7 @@ namespace Carbon
                     void* State = nullptr;
                     lua_State* Threads[] = { L };
                     
-                    ScriptContextResumeFunc(ScriptContext + Offsets::ScriptContextToResume, State, Threads, ResumeFunction(L), 0, 0);
+                    ScriptContextResumeFunc(ScriptContext + ::Offsets::ExtraSpace::ScriptContextToResume, State, Threads, ResumeFunction(L), 0, 0);
 
                     lua_unref(L, YieldedThreadRef);
                 });

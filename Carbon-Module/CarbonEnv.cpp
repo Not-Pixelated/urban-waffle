@@ -145,7 +145,7 @@ namespace Carbon
         {
             int Index(lua_State* L)
             {
-                if (L->userdata->Capabilities == Internal::MaxCapabilities)
+                if (L->userdata && L->userdata->Capabilities == Internal::MaxCapabilities)
                 {
                     std::string Key = lua_isstring(L, 2) ? lua_tostring(L, 2) : "";
                     for (const char* Function : Internal::UnsafeFunctions)
@@ -173,7 +173,7 @@ namespace Carbon
 
             int Namecall(lua_State* L)
             {
-                if (L->userdata->Capabilities == Internal::MaxCapabilities)
+                if (L->userdata && L->userdata->Capabilities == Internal::MaxCapabilities)
                 {
                     std::string Key = L->namecall->data;
                     for (const char* Function : Internal::UnsafeFunctions)

@@ -32,21 +32,6 @@ namespace Carbon
         inline void* IPCData = nullptr;
     }
 
-    namespace Offsets
-    {
-        // Internal Reference: client_offsets.txt
-        inline const uintptr_t Print = REBASE(0x1CD0600);
-        inline const uintptr_t FakeDataModelPointer = REBASE(0x795A0D8);
-        constexpr uintptr_t FakeDataModelToDataModel = 0x1C0;
-
-        inline const uintptr_t GetLuaStateForInstance = REBASE(0x1B19950);
-        constexpr uintptr_t RequireBypass = 0x8FD;
-        
-        inline const uintptr_t OpcodeLookupTable = REBASE(0x61ed730);
-        inline const uintptr_t TaskDefer = REBASE(0x1CB7290);
-        inline const uintptr_t ScriptContextResume = REBASE(0x1C02930);
-        constexpr uintptr_t ScriptContextToResume = 0x10; // Placeholder until verified, YuB uses 0x10
-    }
 
     namespace Core
     {
