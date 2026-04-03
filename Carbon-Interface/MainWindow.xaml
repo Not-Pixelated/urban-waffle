@@ -1,0 +1,24 @@
+<Window x:Class="Carbon_Interface.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Carbon_Interface"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+
+    <StackPanel Margin="10">
+        <TextBox x:Name="ScriptBox" 
+                 Height="367" 
+                 AcceptsReturn="True" 
+                 VerticalScrollBarVisibility="Auto"
+                 FontFamily="Consolas"
+                 FontSize="14"/>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <Button x:Name="ExecuteBtn" Content="Execute" Width="100" Height="30" Margin="5" Click="ExecuteBtn_Click"/>
+            <Button x:Name="InjectBtn" Content="Inject" Width="100" Height="30" Margin="5" Click="InjectBtn_Click"/>
+        </StackPanel>
+    </StackPanel>
+
+</Window>

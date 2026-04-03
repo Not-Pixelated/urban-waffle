@@ -1,0 +1,3 @@
+﻿C:\Program Files\Microsoft Visual Studio\18\Insiders\MSBuild\Microsoft\VC\v180\Microsoft.CppBuild.targets(548,5): warning MSB8028: The intermediate directory (C:\Users\Pixel\Videos\Carbon\build\\x64\Release\) contains files shared from another project (Carbon-Injector.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  pch.cpp
+C:\Users\Pixel\Videos\carbon\Carbon-Module\pch.cpp(1,1): error C1041: cannot open program database 'C:\Users\Pixel\Videos\Carbon\build\x64\Release\vc145.pdb'; if multiple CL.EXE write to the same .PDB file, please use /FS

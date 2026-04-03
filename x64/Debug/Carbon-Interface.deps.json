@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Carbon-Interface/1.0.0": {
+        "runtime": {
+          "Carbon-Interface.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Carbon-Interface/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

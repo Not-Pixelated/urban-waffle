@@ -1,0 +1,16 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Carbon-Injector/Carbon-Injector.vcxproj">
+    <BuildType Solution="Debug|Any CPU" Project="Release" />
+  </Project>
+  <Project Path="Carbon-Interface/Carbon-Interface.csproj">
+    <BuildType Solution="Debug|Any CPU" Project="Release" />
+  </Project>
+  <Project Path="Carbon-Module/Carbon-Module.vcxproj" Id="98fe09e3-fd9a-47fc-a899-bf5d7b291a4c">
+    <BuildType Solution="Debug|Any CPU" Project="Release" />
+  </Project>
+</Solution>

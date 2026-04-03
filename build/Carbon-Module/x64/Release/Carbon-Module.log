@@ -1,0 +1,13 @@
+﻿cl : command line  warning D9025: overriding '/sdl' with '/GS-'
+  CarbonCore.cpp
+  CarbonEnv.cpp
+  CarbonIPC.cpp
+  dllmain.cpp
+     Creating library ..\x64\Release\Carbon-Module.lib and object ..\x64\Release\Carbon-Module.exp
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Generating code
+  31 of 7651 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
+    26 functions were new in current compilation
+    36 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  Carbon-Module.vcxproj -> C:\Users\Pixel\Videos\Carbon\x64\Release\Carbon-Module.dll
