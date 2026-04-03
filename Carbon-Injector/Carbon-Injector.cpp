@@ -105,11 +105,11 @@ void __stdcall ShellcodeV13_Logic(MANUAL_MAPPING_DATA* pData)
         _DllMain(pBase, DLL_PROCESS_ATTACH, pData);
     }
     
-    // Goliath V40: Atomic Inline Healing
+    // Goliath V40: Atomic Inline Healing (Disabled: OriginalBytes uninitialized and causes crash)
     // Restoration must happen before Stage 6 to ensure 100% stock state
-    for (int i = 0; i < 14; i++) {
+    /*for (int i = 0; i < 14; i++) {
         *(BYTE*)(pData->pTargetCode + i) = pData->OriginalBytes[i];
-    }
+    }*/
     pData->Stage = 5; // [STAGE 5] Engine Tunnel Healed
     
     *pData->pInjected = true;
@@ -214,6 +214,13 @@ bool GoliathV47(HANDLE hProc, DWORD PID, const char* szDllFile)
     uintptr_t targetModBase = GetModuleBase(hProc, "devenum.dll");
     std::ifstream File(szDllFile, std::ios::binary | std::ios::ate);
     auto FileSize = File.tellg();
+
+    // Goliath V48: Dynamic Base Selection
+    if (!targetModBase) {
+        std::cout << "\n [!] Audit: devenum.dll not found. Allocating dynamic base...";
+        targetModBase = (uintptr_t)VirtualAllocEx(hProc, nullptr, (size_t)FileSize + 0x10000, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    }
+
     BYTE* pSrcData = new BYTE[static_cast<UINT_PTR>(FileSize)];
     File.seekg(0, std::ios::beg);
     File.read(reinterpret_cast<char*>(pSrcData), FileSize);
@@ -253,7 +260,7 @@ bool GoliathV47(HANDLE hProc, DWORD PID, const char* szDllFile)
     memcpy(stub, ShellcodeV13_Stub, sizeof(stub));
     *reinterpret_cast<uintptr_t*>(stub + 0x11) = sharedMem; 
     *reinterpret_cast<uintptr_t*>(stub + 0x1B) = logicAddr; 
-    *reinterpret_cast<uintptr_t*>(stub + 0x33) = data.originalHeartbeat;
+    *reinterpret_cast<uintptr_t*>(stub + 0x36) = data.originalHeartbeat;
 
     bool fals = false;
     WriteProcessMemory(hProc, (LPVOID)data.pInjected, &fals, sizeof(bool), nullptr);
